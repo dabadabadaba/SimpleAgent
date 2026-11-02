@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent 工作流管理平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 680px;
+            padding: 2rem;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        .header .icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        .card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(71, 85, 105, 0.4);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .card h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .card h2::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            border-radius: 2px;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #94a3b8;
+            margin-bottom: 0.4rem;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 10px;
+            color: #e2e8f0;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+        .form-group select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2394a3b8' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            cursor: pointer;
+        }
+        .form-group select option {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-group .hint {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 0.3rem;
+        }
+        .plugin-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.3rem;
+        }
+        .plugin-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            transition: color 0.15s;
+            user-select: none;
+        }
+        .plugin-item:hover {
+            color: #38bdf8;
+        }
+        .plugin-item input {
+            width: 1.05rem;
+            height: 1.05rem;
+            accent-color: #38bdf8;
+            cursor: pointer;
+        }
+        .input-row {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .input-row input {
+            flex: 1;
+        }
+        .btn-pick {
+            padding: 0.75rem 1rem;
+            background: rgba(71, 85, 105, 0.3);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 10px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .btn-pick:hover {
+            background: rgba(71, 85, 105, 0.5);
+            color: #e2e8f0;
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+        .btn-pick .folder-icon {
+            font-size: 1rem;
+        }
+        .btn {
+            width: 100%;
+            padding: 0.85rem 1.5rem;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.3);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .result {
+            margin-top: 1.25rem;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            display: none;
+        }
+        .result.success {
+            display: block;
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #86efac;
+        }
+        .result.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+        }
+        .task-list {
+            margin-top: 1.5rem;
+        }
+        .task-list .section-title {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .task-list .section-title::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: #475569;
+            border-radius: 2px;
+        }
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.6rem 1rem;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid transparent;
+            border-radius: 8px;
+            margin-bottom: 0.4rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .task-item:hover {
+            background: rgba(56, 189, 248, 0.08);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+        .task-item .id {
+            font-family: 'Courier New', monospace;
+            color: #38bdf8;
+            font-size: 0.75rem;
+        }
+        .task-item .badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        .badge-running { background: rgba(56, 189, 248, 0.2); color: #7dd3fc; }
+        .badge-finished { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+        .badge-terminated { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+        .badge-other { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
+        .task-item .arrow {
+            color: #475569;
+            font-size: 0.75rem;
+        }
+        .task-item .actions {
+            display: flex; gap: 0.4rem; align-items: center;
+        }
+        .btn-terminate {
+            padding: 0.25rem 0.6rem;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 6px;
+            color: #fca5a5;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-terminate:hover {
+            background: rgba(239, 68, 68, 0.3);
+            color: #fecaca;
+        }
+        .btn-terminate:disabled {
+            opacity: 0.4; cursor: not-allowed;
+        }
+        .task-empty {
+            text-align: center;
+            color: #475569;
+            font-size: 0.8rem;
+            padding: 1rem;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #475569;
+            font-size: 0.75rem;
+        }
+
+        /* ===== 文件浏览器模态框 ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: #1e293b;
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 560px;
+            max-height: 75vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1.5rem 0.75rem;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+        }
+        .modal-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 0 0.25rem;
+            line-height: 1;
+        }
+        .modal-close:hover { color: #e2e8f0; }
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(15, 23, 42, 0.4);
+            font-size: 0.8rem;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+            min-height: 42px;
+            overflow-x: auto;
+        }
+        .breadcrumb span {
+            color: #64748b;
+            user-select: none;
+        }
+        .breadcrumb a {
+            color: #38bdf8;
+            text-decoration: none;
+            cursor: pointer;
+            white-space: nowrap;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .breadcrumb a:hover { background: rgba(56,189,248,0.15); }
+        .breadcrumb a.current {
+            color: #e2e8f0;
+            cursor: default;
+        }
+        .breadcrumb a.current:hover { background: none; }
+        .dir-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+        .dir-list .loading {
+            text-align: center;
+            color: #64748b;
+            padding: 2rem;
+            font-size: 0.85rem;
+        }
+        .dir-entry {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+            color: #cbd5e1;
+            font-size: 0.88rem;
+        }
+        .dir-entry:hover { background: rgba(56,189,248,0.1); }
+        .dir-entry .dir-icon { color: #fbbf24; font-size: 1.2rem; }
+        .dir-entry .dir-name { flex: 1; word-break: break-all; }
+        .dir-entry .dir-arrow { color: #475569; font-size: 0.75rem; }
+        .dir-empty {
+            text-align: center;
+            color: #475569;
+            padding: 2rem;
+            font-size: 0.82rem;
+        }
+        .modal-footer {
+            padding: 0.75rem 1.5rem;
+            border-top: 1px solid rgba(71, 85, 105, 0.3);
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+        .btn-cancel {
+            padding: 0.55rem 1.25rem;
+            background: transparent;
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 8px;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .btn-cancel:hover { border-color: #64748b; color: #e2e8f0; }
+        .btn-select {
+            padding: 0.55rem 1.5rem;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-select:hover { box-shadow: 0 4px 15px rgba(56,189,248,0.3); }
+        .btn-select:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">&#9889;</div>
+            <h1>Agent 工作流管理平台</h1>
+            <p>基于 LangGraph 的异步任务调度系统</p>
+        </div>
+
+
+        <div class="card">
+            <h2>启动新工作流</h2>
+            <form id="taskForm">
+                <div class="form-group">
+                    <label for="rootWorkspace">ROOT_WORKSPACE（任务根目录）</label>
+                    <div class="input-row">
+                        <input
+                            type="text"
+                            id="rootWorkspace"
+                            name="root_workspace"
+                            placeholder="请点击「浏览...」选择文件夹，或直接输入绝对路径"
+                            required
+                        />
+                        <button type="button" id="pickFolderBtn" class="btn-pick" title="从本地选择文件夹">
+                            <span class="folder-icon">&#128193;</span> 浏览...
+                        </button>
+                    </div>
+                    <div class="hint">当前 workflow 的工作目录将创建在此路径下，建议使用绝对路径</div>
+                </div>
+                <div class="form-group">
+                    <label for="llmBase">基座模型（选择模型配置，单选）</label>
+                    <select id="llmBase" name="llm_base" required>
+                        <option value="">加载中...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Plugins（选择插件，可多选）</label>
+                    <div id="pluginList" class="plugin-list"></div>
+                </div>
+                <div class="form-group">
+                    <label>MCP（选择 MCP 服务，单选）</label>
+                    <div id="mcpList" class="plugin-list"></div>
+                </div>
+                <div class="form-group">
+                    <label>CLI 命令（白名单，可多选）</label>
+                    <div id="cliCmdList" class="plugin-list"></div>
+                </div>
+                <div class="form-group">
+                    <label for="msg">任务消息</label>
+                    <textarea
+                        id="msg"
+                        name="msg"
+                        placeholder="输入要处理的任务内容..."
+                        required
+                    >本地文件生成测试任务</textarea>
+                </div>
+                <button type="submit" class="btn" id="submitBtn">
+                    启动工作流
+                </button>
+            </form>
+            <div id="result" class="result"></div>
+        </div>
+
+        <div class="card task-list" id="taskListCard" style="display:none;">
+            <div class="section-title">任务列表（点击查看详情）</div>
+            <div id="taskList"></div>
+        </div>
+
+        <div class="footer" id="footerInfo">
+            LangGraph Agent &copy; 2026
+        </div>
+    </div>
+
+    <!-- ===== 文件浏览器模态框 ===== -->
+    <div class="modal-overlay" id="browseModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>&#128193; 选择 ROOT_WORKSPACE 目录</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="breadcrumb" id="breadcrumb"></div>
+            <div class="dir-list" id="dirList">
+                <div class="loading">加载中...</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" id="modalCancel">取消</button>
+                <button class="btn-select" id="modalSelect" disabled>选择此文件夹</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('taskForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const resultDiv = document.getElementById('result');
+        const rootWorkspaceInput = document.getElementById('rootWorkspace');
+        const pickFolderBtn = document.getElementById('pickFolderBtn');
+
+        // ===== 文件浏览器模态框 =====
+        const modal = document.getElementById('browseModal');
+        const breadcrumb = document.getElementById('breadcrumb');
+        const dirListEl = document.getElementById('dirList');
+        const modalSelect = document.getElementById('modalSelect');
+
+        let currentBrowsePath = null;   // 当前浏览的绝对路径
+        let currentEntries = [];       // 当前目录条目缓存（用于 onclick 绑定）
+
+        function openBrowser() {
+            modal.classList.add('active');
+            modalSelect.disabled = true;
+            navigateTo(null);   // null → 显示盘符列表
+        }
+
+        function closeBrowser() {
+            modal.classList.remove('active');
+        }
+
+        async function navigateTo(path) {
+            dirListEl.innerHTML = '<div class="loading">加载中...</div>';
+            modalSelect.disabled = true;
+            currentBrowsePath = null;
+            currentEntries = [];
+
+            try {
+                const qs = path !== null ? `?path=${encodeURIComponent(path)}` : '';
+                const resp = await fetch(`/browse${qs}`);
+                const data = await resp.json();
+
+                currentBrowsePath = data.current_path;
+                renderBreadcrumb(data);
+                renderEntries(data);
+            } catch (err) {
+                dirListEl.innerHTML = `<div class="dir-empty">加载失败: ${err.message}</div>`;
+            }
+        }
+
+        function renderBreadcrumb(data) {
+            if (data.is_root && !data.current_path) {
+                breadcrumb.innerHTML = '<span>选择磁盘或根目录</span>';
+                return;
+            }
+
+            const p = data.current_path;
+            const isWin = /^[A-Za-z]:\\/.test(p);   // Windows 绝对路径检测
+            const sep = isWin ? '\\' : '/';
+
+            // 构建面包屑路径片段
+            let parts = [];
+            if (isWin) {
+                const drive = p.substring(0, 3);  // "D:\"
+                parts.push({ label: drive, path: drive });
+                const rest = p.substring(3);
+                if (rest) {
+                    const segs = rest.split(sep).filter(s => s);
+                    let accum = drive;
+                    for (const seg of segs) {
+                        accum += seg + sep;
+                        parts.push({ label: seg, path: accum });
+                    }
+                }
+            } else {
+                parts.push({ label: '/', path: '/' });
+                const rest = p.substring(1);
+                if (rest) {
+                    const segs = rest.split(sep).filter(s => s);
+                    let accum = '/';
+                    for (const seg of segs) {
+                        accum += seg + '/';
+                        parts.push({ label: seg, path: accum });
+                    }
+                }
+            }
+
+            breadcrumb.innerHTML = parts.map((part, i) => {
+                const isLast = i === parts.length - 1;
+                if (isLast) {
+                    return (i > 0 ? '<span> / </span>' : '') +
+                        `<a class="current">${escapeHtml(part.label)}</a>`;
+                } else {
+                    return (i > 0 ? '<span> / </span>' : '') +
+                        `<a class="crumb-link" data-path="${escapeAttr(part.path)}">${escapeHtml(part.label)}</a>`;
+                }
+            }).join('');
+
+            // 给面包屑里的可点击链接绑定事件
+            breadcrumb.querySelectorAll('.crumb-link').forEach(el => {
+                el.addEventListener('click', () => navigateTo(el.dataset.path));
+            });
+
+            modalSelect.disabled = false;
+        }
+
+        function renderEntries(data) {
+            if (data.error) {
+                dirListEl.innerHTML = `<div class="dir-empty">${escapeHtml(data.error)}</div>`;
+                modalSelect.disabled = true;
+                return;
+            }
+
+            currentEntries = [];
+            let html = '';
+
+            // "上级目录"入口
+            if (data.parent_path !== null && data.parent_path !== undefined && data.current_path) {
+                const isWinRoot = /^[A-Za-z]:\\$/.test(data.current_path);
+                const upTarget = isWinRoot ? '__DRIVES__' : data.parent_path;
+                html += `<div class="dir-entry" data-nav="${escapeAttr(upTarget)}">
+                    <span class="dir-icon">&#128285;</span>
+                    <span class="dir-name" style="color:#94a3b8;">上级目录</span>
+                </div>`;
+            }
+
+            if (data.entries.length === 0) {
+                html += '<div class="dir-empty">此目录下无子文件夹</div>';
+            } else {
+                currentEntries = data.entries;
+                data.entries.forEach((e, idx) => {
+                    html += `<div class="dir-entry" data-nav="${escapeAttr(e.path)}" data-idx="${idx}">
+                        <span class="dir-icon">&#128193;</span>
+                        <span class="dir-name">${escapeHtml(e.name)}</span>
+                        <span class="dir-arrow">&#9654;</span>
+                    </div>`;
+                });
+            }
+
+            dirListEl.innerHTML = html;
+
+            // 绑定点击事件：单击进入，双击选择并关闭
+            dirListEl.querySelectorAll('.dir-entry').forEach(el => {
+                const navPath = el.dataset.nav;
+                el.addEventListener('click', () => {
+                    if (navPath === '__DRIVES__') {
+                        navigateTo(null);
+                    } else {
+                        navigateTo(navPath);
+                    }
+                });
+                el.addEventListener('dblclick', () => {
+                    if (navPath && navPath !== '__DRIVES__') {
+                        selectAndClose(navPath);
+                    } else {
+                        // 双击上级目录不会选择
+                    }
+                });
+            });
+        }
+
+        function escapeHtml(text) {
+            const d = document.createElement('div');
+            d.textContent = text;
+            return d.innerHTML;
+        }
+
+        function escapeAttr(text) {
+            return text.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function selectAndClose(path) {
+            rootWorkspaceInput.value = path;
+            closeBrowser();
+        }
+
+        // 绑定按钮与事件
+        pickFolderBtn.addEventListener('click', openBrowser);
+        document.getElementById('modalClose').addEventListener('click', closeBrowser);
+        document.getElementById('modalCancel').addEventListener('click', closeBrowser);
+        document.getElementById('modalSelect').addEventListener('click', () => {
+            if (currentBrowsePath) {
+                rootWorkspaceInput.value = currentBrowsePath;
+            }
+            closeBrowser();
+        });
+
+        // 点击遮罩关闭
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeBrowser();
+        });
+
+        // 页面加载时获取服务信息
+        async function initFooter() {
+            try {
+                const resp = await fetch('/info');
+                const data = await resp.json();
+                document.getElementById('footerInfo').textContent =
+                    `LangGraph Agent &copy; 2026 | Port: ${data.port}`;
+                // 设置默认的绝对路径
+                if (data.base_dir && !rootWorkspaceInput.value) {
+                    rootWorkspaceInput.value = data.base_dir + '/task_workspaces';
+                }
+            } catch (e) {
+                // 静默处理
+            }
+        }
+
+        // 请求中断任务（等当前节点结束后转入人工介入）
+        async function terminateTask(tid, btn) {
+            if (!confirm(`确定要请求中断任务 ${tid.substring(0, 8)}... 吗？\n当前节点执行完毕后流程会暂停，等待你的下一步指令。`)) return;
+            btn.disabled = true;
+            btn.textContent = '中断中...';
+            try {
+                const resp = await fetch(`/terminate/${tid}`, { method: 'POST' });
+                const data = await resp.json().catch(() => ({}));
+                alert(data.msg || data.detail || '已请求中断');
+            } catch (err) {
+                alert('中断请求失败: ' + err.message);
+            }
+            btn.disabled = false;
+            btn.textContent = '✕ 请求中断';
+            refreshTaskList();
+        }
+
+        // 刷新任务列表（全部任务，含历史）
+        async function refreshTaskList() {
+            try {
+                const resp = await fetch('/list_all_tasks');
+                const data = await resp.json();
+                const taskListCard = document.getElementById('taskListCard');
+                const taskList = document.getElementById('taskList');
+                if (data.tasks && data.tasks.length > 0) {
+                    taskListCard.style.display = 'block';
+                    taskList.innerHTML = data.tasks.map(t => {
+                        const shortId = t.task_uuid.substring(0, 8);
+                        let badgeClass, badgeText;
+                        if (t.is_running) {
+                            badgeClass = 'badge-running';
+                            badgeText = '运行中';
+                        } else if (t.status === 'finished') {
+                            badgeClass = 'badge-finished';
+                            badgeText = '已完成';
+                        } else if (t.status && t.status.includes('terminated')) {
+                            badgeClass = 'badge-terminated';
+                            badgeText = '已终止';
+                        } else {
+                            badgeClass = 'badge-other';
+                            badgeText = t.status || '未知';
+                        }
+                        const actionsHtml = t.is_running
+                            ? `<span class="actions">
+                                <button class="btn-terminate" data-tid="${t.task_uuid}" onclick="event.preventDefault(); event.stopPropagation(); terminateTask('${t.task_uuid}', this)">&#10005; 强制中断</button>
+                               </span>`
+                            : '';
+                        return `<a class="task-item" href="/task/${t.task_uuid}/detail">
+                            <span class="id">${shortId}...</span>
+                            <span class="badge ${badgeClass}">${badgeText}</span>
+                            ${actionsHtml}
+                            <span class="arrow">&rarr;</span>
+                        </a>`;
+                    }).join('');
+                } else {
+                    taskListCard.style.display = 'block';
+                    taskList.innerHTML = '<div class="task-empty">暂无任务记录</div>';
+                }
+            } catch (e) {
+                // 静默处理
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const rootWorkspace = document.getElementById('rootWorkspace').value.trim();
+            const msg = document.getElementById('msg').value.trim();
+            const llmBase = document.getElementById('llmBase').value.trim();
+            const plugins = Array.from(document.querySelectorAll('#pluginList input:checked'))
+                .map(cb => cb.value);
+            const mcpChecked = document.querySelector('#mcpList input:checked');
+            const mcps = mcpChecked ? mcpChecked.value : '';
+            const cliCmds = Array.from(document.querySelectorAll('#cliCmdList input:checked'))
+                .map(cb => cb.value);
+
+            if (!rootWorkspace || !msg) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '请填写 ROOT_WORKSPACE 和任务消息';
+                return;
+            }
+            if (!llmBase) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '请选择 LLM_Base 配置';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = '提交中...';
+            resultDiv.className = 'result';
+            resultDiv.style.display = 'none';
+
+            try {
+                const resp = await fetch('/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        msg: msg,
+                        root_workspace: rootWorkspace,
+                        llm_base: llmBase,
+                        plugins: plugins,
+                        mcps: mcps,
+                        cli_cmds: cliCmds
+                    })
+                });
+
+                const data = await resp.json();
+
+                if (resp.ok && data.code === 0) {
+                    // 自动跳转到任务详情页
+                    window.location.href = `/task/${data.task_uuid}/detail`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = '提交失败: ' + (data.detail || '未知错误');
+                }
+            } catch (err) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '网络错误: ' + err.message;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '启动工作流';
+            }
+        });
+
+        // MCP 单选互斥：点选一项时取消其他已选项
+        document.getElementById('mcpList').addEventListener('change', (e) => {
+            if (e.target.type === 'checkbox') {
+                document.querySelectorAll('#mcpList input[type="checkbox"]').forEach(cb => {
+                    if (cb !== e.target) cb.checked = false;
+                });
+            }
+        });
+
+        // ---- 加载 LLM_Base 配置、Plugins、MCP、CLI 命令列表 ----
+        async function loadOptions() {
+            try {
+                const [llmResp, pluginResp, mcpResp, cliResp] = await Promise.all([
+                    fetch('/llm-config'),
+                    fetch('/plugins'),
+                    fetch('/mcps'),
+                    fetch('/cli-commands')
+                ]);
+                const llmData = await llmResp.json();
+                const pluginData = await pluginResp.json();
+                const mcpData = await mcpResp.json();
+                const cliData = await cliResp.json().catch(() => ({ cli_commands: [] }));
+
+                const llmSelect = document.getElementById('llmBase');
+                const keys = llmData.keys || [];
+                llmSelect.innerHTML = keys.length
+                    ? keys.map(k =>
+                        `<option value="${escapeAttr(k)}">${escapeAttr(k)}</option>`
+                      ).join('')
+                    : '<option value="">未找到 LLM 配置</option>';
+                // 默认选中列表最后一个作为初始值
+                if (keys.length) {
+                    llmSelect.selectedIndex = keys.length - 1;
+                }
+
+                const pluginList = document.getElementById('pluginList');
+                const plugins = pluginData.plugins || [];
+                pluginList.innerHTML = plugins.length
+                    ? plugins.map(p =>
+                        `<label class="plugin-item">
+                            <input type="checkbox" value="${escapeAttr(p)}"> ${escapeAttr(p)}
+                        </label>`
+                      ).join('')
+                    : '<span style="color:#94a3b8;font-size:0.85rem;">Plugin 目录下无可用插件</span>';
+
+                const mcpList = document.getElementById('mcpList');
+                const mcps = mcpData.mcps || [];
+                mcpList.innerHTML = mcps.length
+                    ? mcps.map(m =>
+                        `<label class="plugin-item">
+                            <input type="checkbox" value="${escapeAttr(m)}"> ${escapeAttr(m)}
+                        </label>`
+                      ).join('')
+                    : '<span style="color:#94a3b8;font-size:0.85rem;">MCP 目录下无可用服务</span>';
+
+                const cliCmdList = document.getElementById('cliCmdList');
+                const cliCmds = cliData.cli_commands || [];
+                cliCmdList.innerHTML = cliCmds.length
+                    ? cliCmds.map(c =>
+                        `<label class="plugin-item" title="${escapeAttr(c.description || '')}">
+                            <input type="checkbox" value="${escapeAttr(c.name)}"> ${escapeAttr(c.name)}
+                        </label>`
+                      ).join('')
+                    : '<span style="color:#94a3b8;font-size:0.85rem;">CLI_COMMANDS.yaml 中无可用命令</span>';
+            } catch (e) {
+                document.getElementById('pluginList').innerHTML =
+                    '<span style="color:#fca5a5;font-size:0.85rem;">加载失败</span>';
+                document.getElementById('mcpList').innerHTML =
+                    '<span style="color:#fca5a5;font-size:0.85rem;">加载失败</span>';
+                document.getElementById('cliCmdList').innerHTML =
+                    '<span style="color:#fca5a5;font-size:0.85rem;">加载失败</span>';
+            }
+        }
+
+        // 初始化
+        initFooter();
+        loadOptions();
+        refreshTaskList();
+        setInterval(refreshTaskList, 5000);
+    </script>
+</body>
+</html>

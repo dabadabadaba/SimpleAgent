@@ -1,0 +1,29 @@
+{
+	"deepseek_flash":
+	{
+		"base_url":"https://api.deepseek.com",
+		"model":"deepseek-flash",
+		"temperature":0.25,
+		"api_key":"deepseek_api_key",
+		"compress_trigger_token":62768,
+		"api_type":"deepseek"
+	},
+	"qwen_flash":
+	{
+		"base_url":"https://dashscope.aliyuncs.com/compatible-mode/v1",
+		"model":"qwen3.7-flash",
+		"temperature":0.15,
+		"api_key":"qwen_api_key",
+		"compress_trigger_token":22768,
+		"api_type":"openai"
+	},
+	"mimo_flash":
+	{
+		"base_url":"https://api.xiaomimimo.com/v1",
+		"model":"mimo-v2.6-flash",
+		"temperature":0.15,
+		"api_key":"mimo_api_key",
+		"compress_trigger_token":132768,
+		"api_type":"openai"
+	}
+}
