@@ -1,0 +1,25 @@
+# 工具配置：新增工具只需在这里追加一条
+tools:
+
+  # 文件操作工具
+  - module: FileTools
+    func: read_file_tool
+  - module: FileTools
+    func: edit_file_tool
+  - module: FileTools
+    func: grep_file_tool
+  - module: FileTools
+    func: list_dir_tool
+  - module: FileTools
+    func: write_file_tool
+  - module: FileTools
+    func: excel_read_tool
+  - module: FileTools
+    func: excel_read_rows_cols_tool
+  - module: FileTools
+    func: create_folder_tool
+  #通用工具
+  - module: GeneralTools
+    func: get_current_time
+
+    

@@ -1,0 +1,20 @@
+# ============================================================
+# ConfigurationDesk Bus Manager MCP —— 业务节点配置
+# 节点名 == router 意图名；tools_scope 为新增可选字段，
+# 用于按意图绑定 MCP 工具子集（见 TA_Nodes.py 集成说明）
+# ============================================================
+nodes:
+  automationdesk:
+    prompt_key: automationdesk_node
+    use_tools: true
+    interrupt: false
+    fallback_to: task_process
+    tools_scope: automationdesk
+
+
+router_valid_intents:
+  - automationdesk
+
+
+  
+  

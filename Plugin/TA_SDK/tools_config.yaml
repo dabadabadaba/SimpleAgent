@@ -1,0 +1,9 @@
+# 工具配置：新增工具只需在这里追加一条
+tools:
+  # TA 业务工具
+  - module: TA_Tools
+    func: mapping_analysis_report
+    node: mapping_analysis_report
+  - module: TA_Tools
+    func: generate_pytest_case
+    node: generate_pytest_case

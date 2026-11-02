@@ -1,0 +1,90 @@
+# ============================================================
+# ConfigurationDesk Bus Manager MCP —— 业务节点配置
+# 节点名 == router 意图名；tools_scope 为新增可选字段，
+# 用于按意图绑定 MCP 工具子集（见 TA_Nodes.py 集成说明）
+# ============================================================
+nodes:
+  cfd_bootstrap:
+    prompt_key: cfd_bootstrap_node
+    use_tools: true
+    interrupt: false
+    fallback_to: task_manage
+    tools_scope: cfd_bootstrap
+
+  cfd_project_setup:
+    prompt_key: cfd_project_setup_node
+    use_tools: true
+    interrupt: false
+    fallback_to: task_manage
+    tools_scope: cfd_project_setup
+
+  cfd_matrix_import:
+    prompt_key: cfd_matrix_import_node
+    use_tools: true
+    interrupt: false
+    fallback_to: task_manage
+    tools_scope: cfd_matrix_import
+
+  cfd_bus_config:
+    prompt_key: cfd_bus_config_node
+    use_tools: true
+    interrupt: false
+    fallback_to: task_manage
+    tools_scope: cfd_bus_config
+
+  cfd_model_chain:
+    prompt_key: cfd_model_chain_node
+    use_tools: true
+    interrupt: false
+    fallback_to: task_manage
+    tools_scope: cfd_model_chain
+
+  cfd_io_functions:
+    prompt_key: cfd_io_functions_node
+    use_tools: true
+    interrupt: false
+    fallback_to: task_manage
+    tools_scope: cfd_io_functions
+
+  cfd_hardware:
+    prompt_key: cfd_hardware_node
+    use_tools: true
+    interrupt: false
+    fallback_to: task_manage
+    tools_scope: cfd_hardware
+
+  cfd_build:
+    prompt_key: cfd_build_node
+    use_tools: true
+    interrupt: false
+    fallback_to: task_manage
+    tools_scope: cfd_build
+
+  cfd_working_view:
+    prompt_key: cfd_working_view_node
+    use_tools: true
+    interrupt: false
+    fallback_to: task_manage
+    tools_scope: cfd_working_view
+
+  cfd_inspect:
+    prompt_key: cfd_inspect_node
+    use_tools: true
+    interrupt: false
+    fallback_to: task_manage
+    tools_scope: cfd_inspect
+
+router_valid_intents:
+  - cfd_bootstrap
+  - cfd_project_setup
+  - cfd_matrix_import
+  - cfd_bus_config
+  - cfd_model_chain
+  - cfd_io_functions
+  - cfd_hardware
+  - cfd_build
+  - cfd_working_view
+  - cfd_inspect
+
+  
+  

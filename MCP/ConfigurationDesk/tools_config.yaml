@@ -1,0 +1,112 @@
+# ConfigurationDesk MCP 工具清单（77 个，按 tools_scope 分组）
+# node: <scope名>  —— 与 nodes_config.yaml 中节点的 tools_scope 一一对应
+tools:
+  - mcp_node: cfd_bootstrap
+    tools:
+      - start_configurationdesk
+      - get_application_status
+      - diagnose_connection
+      - stop_configurationdesk
+      - save_project
+      - undo
+      - redo
+
+  - mcp_node: cfd_project_setup
+    tools:
+      - set_project_root
+      - create_project
+      - open_project
+      - close_project
+      - remove_project
+      - list_projects
+      - get_project_path
+      - backup_project
+      - open_project_from_backup
+      - add_application
+      - activate_application
+      - remove_application
+      - list_applications
+      - list_configuration
+
+  - mcp_node: cfd_matrix_import
+    tools:
+      - add_communication_matrix
+      - remove_communication_matrix
+      - list_matrices
+      - find_matrix_elements
+      - set_matrix_element_property
+
+  - mcp_node: cfd_bus_config
+    tools:
+      - create_bus_configuration
+      - remove_bus_configuration
+      - list_bus_configurations
+      - assign_matrix_to_bus_config
+      - assign_ecu_to_bus_config
+      - add_feature_to_bus_element
+      - remove_bus_config_elements
+      - generate_bus_containers
+      - find_bus_config_elements
+      - assign_bus_config_to_application_process
+      - set_function_port_property
+      - set_bus_config_element_property
+
+  - mcp_node: cfd_model_chain
+    tools:
+      - add_model
+      - replace_model
+      - remove_model
+      - analyze_models
+      - create_application_process
+      - list_models
+      - add_model_to_signal_chain
+      - add_model_port_to_signal_chain
+      - list_model_ports
+
+  - mcp_node: cfd_io_functions
+    tools:
+      - list_io_function_block_types
+      - add_io_function_block
+      - connect_function_block_port_to_model_port
+
+  - mcp_node: cfd_hardware
+    tools:
+      - add_hardware_platform
+      - import_hardware_topology
+      - scan_hardware
+      - remove_hardware
+      - list_platforms
+      - refresh_platforms
+      - add_hardware_element
+      - add_application_processing_unit
+      - create_io_function_block
+      - set_io_function_block_property
+      - list_io_function_block_properties
+      - list_bus_access_requests
+      - assign_bus_access
+      - list_assignable_channel_sets
+      - assign_channel_set
+      - auto_assign_channel_set
+      - assign_hardware_automatically
+      - auto_connect_matching_io_function_blocks_to_model_ports
+      - create_preconfigured_application_process
+
+  - mcp_node: cfd_build
+    tools:
+      - build_application
+      - get_build_result
+
+  - mcp_node: cfd_working_view
+    tools:
+      - create_working_view
+      - list_working_views
+      - remove_working_view
+      - clear_all_working_views
+      - export_working_view
+      - check_conflicts
+
+  - mcp_node: cfd_inspect
+    tools:
+      - list_configuration
+      - get_application_status
+      - list_applications

@@ -1,0 +1,11 @@
+{
+    "configurationdesk-mcp": {
+    "command": "uv",
+    "args": [
+      "--directory",
+      "D:\\Study\\AI Agent\\MCP\\ConfigurationDeskBusManagerMCP-adjusted",
+      "run", "--frozen", "--no-dev", "configurationdesk-mcp"
+    ],
+    "transport": "stdio"
+  }
+}

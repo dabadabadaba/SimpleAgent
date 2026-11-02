@@ -1,0 +1,12 @@
+# CLI 命令白名单配置
+# 白名单中的命令会被转化成节点嵌入router node和task manage node之间
+# 新增命令只需在此处添加，无需修改代码
+commands:
+  HIL_Stimulus_AutoBuilder:
+    description: 启动/接管 ConfigurationDesk 与 MATLAB COM 实例, 创建ConfigurationDesk工程, 加载硬件拓扑,一次性生成完整的 HIL 激励(stimulus)工程, 包括ConfigurationDesk工程, Simulink模型, ControlDesk工程。属于独占型重型操作, 单次耗时数分钟。
+    parameters: 
+      hardware_topology_file: 硬件拓扑文件绝对路径(.htfx文件)
+      cfd_project_name: 新建ConfigurationDesk工程名，必须避免特殊符号和非英文字符
+    command_template:  'cd /d "D:\Study\AI Agent\MCP\StimulusProjectGenerate\HIL_AutoBuilder1" && ".venv\Scripts\python.exe" "HIL_AutoBuilder_CLI.py" stimulus --hw-file "%hardware_topology_file%" --project-name "%cfd_project_name%" --mat-ver R2022b --ds-ver "< 2024A"'
+    
+ 

@@ -1,0 +1,15 @@
+# ConfigurationDesk MCP 工具清单（77 个，按 tools_scope 分组）
+# node: <scope名>  —— 与 nodes_config.yaml 中节点的 tools_scope 一一对应
+tools:
+  - mcp_node: automationdesk
+    tools:
+      - automationdesk_app_start_or_attach
+      - automationdesk_project_get_hierarchy
+      - automationdesk_sequence_create_from_code
+      - automationdesk_test_sequence_execute
+      - automationdesk_project_create
+      - automationdesk_mapping_import
+      - automationdesk_folder_create
+
+
+  

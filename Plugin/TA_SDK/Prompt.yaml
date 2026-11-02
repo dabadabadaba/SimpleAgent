@@ -1,0 +1,33 @@
+router_node: |
+  - mapping_analysis_report: 获取csv格式的mapping文件，并结合测试文本文件进行分析
+  - generate_pytest_case：生成和返回pytest测试用例的代码文本，注意不会直接生成py文件，需要后续落盘。
+  - 生成测试用例：通过mapping文件和测试描述生成pytest测试用例
+      - 搜集mapping文件和测试描述文本文件
+      - 工具分析mapping文件和测试描述生成pre_generation_report
+      - 分析pre_generation_report是否包含异议或开放项，**pre_generation_report中如有异议或需要补充的信息，询问用户(ask_question)**
+      - 调用工具生成测试用例并将测试用例固化为py文件
+
+task_manage_node: |
+  根据目标文本总结当前任务现状。只输出当前任务现状和开放项的总结文本。
+  **禁止输出toolcalls，严格按照 Markdown 格式返回结果**
+  **输出格式参考一下示例：**
+  ## 任务清单
+  1. 收集mapping文件和测试描述文件  已完成
+      - 获取项目文件导图（project map）  已完成
+      - 从导图中选出mapping文件和测试描述文件  已完成
+  2. 分析mapping文件  未完成
+  3. 生成测试用例  未完成
+  ## 开方项
+  1. mapping中有异议
+  2. 关键文件缺失
+
+mapping_analysis_node: |
+  调用mapping_analysis_report工具解析mapping和测试描述文本中是否有需要补充的信息。
+  如果决定不调用工具，请给出理由。
+  如果需要，ask_question。
+
+generate_pytest_case_node: |
+  调用generate_pytest_case工具生成符合要求的测试用例代码。注意只返回代码不会直接生成py文件，需要后续落盘。
+  如果决定不调用工具，请给出理由。
+
+

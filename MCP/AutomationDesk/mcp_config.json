@@ -1,0 +1,11 @@
+{
+    "automationdesk-mcp": {
+    "command": "D:\\Study\\AI Agent\\TA_AGENT\\.venv\\Scripts\\python.exe",
+    "args": [
+      "-m", 
+	  "automationdesk_mcp"
+    ],
+	"cwd": "D:\\Study\\AI Agent\\MCP\\AUD_MCP\\ForCustomer",
+    "transport": "stdio"
+  }
+}

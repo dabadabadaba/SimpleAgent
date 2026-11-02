@@ -1,0 +1,21 @@
+nodes:
+  file_operation:
+    prompt_key: file_operation_node       # TA_Prompt.md 中的段落名
+    use_tools: true                       # 是否绑定工具
+    interrupt: false                      # 是否需要用户交互
+    fallback_to: task_process             # 无工具调用时去向
+
+  ask_question:
+    prompt_key: question_node
+    use_tools: false
+    interrupt: true                       # 特殊：需要 interrupt
+    fallback_to: compress_node
+
+
+router_valid_intents:
+  - finish_summary
+  - task_process
+  - ask_question
+  - file_operation
+  
+  

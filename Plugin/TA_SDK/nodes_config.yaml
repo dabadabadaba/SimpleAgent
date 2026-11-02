@@ -1,0 +1,18 @@
+nodes:
+  mapping_analysis_report:
+    prompt_key: mapping_analysis_node
+    use_tools: true
+    interrupt: false
+    fallback_to: task_process
+
+  generate_pytest_case:
+    prompt_key: generate_pytest_case_node
+    use_tools: true
+    interrupt: false
+    fallback_to: task_process
+
+router_valid_intents:
+  - generate_pytest_case
+  - mapping_analysis_report
+  
+  
